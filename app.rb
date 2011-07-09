@@ -21,6 +21,10 @@ end
 
 enable :sessions
 
+configure do
+  TITLE = 'Masher'
+end
+
 helpers do
   include Rack::Utils
   alias_method :h, :escape_html
