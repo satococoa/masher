@@ -19,6 +19,8 @@ class Masher
   end
 end
 
+enable :sessions
+
 configure :development do
   config = YAML::load_file('config.yml')
 end
@@ -31,7 +33,17 @@ helpers do
   include Rack::Utils
   alias_method :h, :escape_html
   def get_tweets(hashtag)
-    Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
+    key = hashtag.to_sym
+    if session[:key].nil? 
+      search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
+      session[:key] = search.first.id if search.size > 1
+      search        
+    else
+      search = Twitter::Search.new.hashtag(hashtag).no_retweets.since_id(session[:key]).per_page(5).fetch
+      session[:key] = search.first.id if search.size > 1
+      search.each {|t| puts t.id}
+      search
+    end
   end
   def transform(tweets)
     tweets.map do |i|
