@@ -56,7 +56,7 @@ end
 
 get '/:hashtag' do |hashtag|
   pass if hash.blank?
-  haml :screen, :locals => {:hashtag => hashtag}
+  haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
 end
 
 get '/tweets/:hashtag' do |hashtag|
@@ -67,7 +67,7 @@ get '/tweets/:hashtag' do |hashtag|
 end
 
 get '/' do
-  haml :index
+  haml :index, :locals => {:class_name => 'index'}
 end
 
 post '/' do
