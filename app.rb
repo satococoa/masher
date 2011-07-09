@@ -22,7 +22,7 @@ end
 enable :sessions
 
 configure do
-  TITLE = 'Masher'
+  TITLE = 'Masher*'
 end
 
 helpers do
