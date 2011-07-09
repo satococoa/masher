@@ -12,16 +12,11 @@ helpers do
   include Rack::Utils
   alias_method :h, :escape_html
   def get_tweets(hashtag)
-    tweets = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
-    # session[sinse_id] = tweets.first.id
+    Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
   end
   def transform(tweets)
     tweets.map {|i| {:text => i.text, :color => ['#fff', '#000']} }
   end
-end
-
-get '/about' do
-  haml :about
 end
 
 get '/styles.css' do
@@ -32,8 +27,9 @@ get '/script.js' do
   coffee :script
 end
 
-get '/' do
-  haml :index
+get '/:hashtag' do |hashtag|
+  pass if hash.blank?
+  haml :screen, :locals => {:hashtag => hashtag}
 end
 
 get '/tweets/:hashtag' do |hashtag|
@@ -42,3 +38,8 @@ get '/tweets/:hashtag' do |hashtag|
   data = transform(tweets)
   data.to_json
 end
+
+get '/' do
+  haml :index
+end
+
