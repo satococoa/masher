@@ -236,6 +236,23 @@ body.screen {
 	margin-left: auto;
 	letter-spacing: -0.1em;
 }
+#articles article.loading:first-child {
+	height:400px;
+}
+#articles article.loading {
+	height:400px;
+	background-image: url(Loading.gif);
+	background-repeat: no-repeat;
+	background-position: center 25%;
+}
+#articles article.loading:first-child {
+	background-position: center center;
+}
+#articles article.loading a,
+#articles article.loading img,
+#articles article.loading p {
+	display:none !important;
+}
 #articles article:first-child .icon img {
 	height: 180px;
 	width: 180px;
@@ -252,7 +269,6 @@ body.screen {
 #articles article:nth-child(3),
 #articles article:nth-child(4),
 #articles article:nth-child(5)  {
-	height: 180px;
 	width: 22.9%;
 	float: left;
 	clear:none;
