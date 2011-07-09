@@ -28,7 +28,7 @@ $ ->
             set_tweet tweet
             loaded++
             article = $("article:nth-child(#{loaded})")
-            if article.length > 1
+            if article.length > 0
               article.removeClass('loading')
               
 
@@ -64,7 +64,6 @@ $ ->
     , process_interval
 
     # initialize
-    $('body').addClass 'loading'
     process(5)
     fetch()
 
