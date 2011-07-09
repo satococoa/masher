@@ -1,5 +1,6 @@
 $ ->
-  if $('#screen').length > 0
+  if $('.screen').length > 0
+    loaded = 0
     hashtag = $('#hashtag').val()
     fetch_interval   = 30000
     process_interval = 5000
@@ -15,14 +16,19 @@ $ ->
             tweets.push d
           localStorage[hashtag] = JSON.stringify(tweets)
 
-    process = () ->
+    process = (num) ->
       if localStorage[hashtag]
         tweets = JSON.parse(localStorage[hashtag])
-        tweet = tweets.shift()
-        if tweet
-          localStorage[hashtag] = JSON.stringify(tweets)
-          # console.log "#{tweet.user} : #{tweet.id} : #{tweet.text} : #{tweet.icon}"
-          set_colors tweet.colors
+        for i in [0..num]
+          tweet = tweets.shift()
+          if tweet
+            localStorage[hashtag] = JSON.stringify(tweets)
+            # console.log "#{tweet.user} : #{tweet.id} : #{tweet.text} : #{tweet.icon}"
+            set_colors tweet.colors
+            set_tweet tweet
+            loaded++
+            if loaded >= 4
+              $('body').removeClass('loading')
 
     set_colors = (colors) ->
       i = 0
@@ -30,16 +36,20 @@ $ ->
         $(".color:nth-child(#{i})").css('background-color', "##{color}")
         i++
 
+    set_tweet = (tweet) ->
+      console.log tweet.id
+
     # timer
     fetcher = setInterval () ->
       fetch()
     , fetch_interval
 
     processer = setInterval () ->
-      process()
+      process(1)
     , process_interval
 
     # initialize
-    process()
+    $('body').addClass 'loading'
+    process(5)
     fetch()
 
