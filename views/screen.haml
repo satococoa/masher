@@ -90,12 +90,6 @@
     <img src="color.png" width="30" height="20" alt="color">
   .color
     <img src="color.png" width="30" height="20" alt="color">
-#articles
-  %article.clearfix
-    %hgroup
-      %h2.icon
-        %a <img src="http://a2.twimg.com/profile_images/525575524/14424182_2338889845.jpg" width="30" height="20" alt="color">
-      %h3.name machida
-    .tweet
-      %p ああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ
-    
+#article
+  - 5.times do |i|
+    = haml :_article
