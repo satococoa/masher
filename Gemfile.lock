@@ -1,6 +1,9 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    active_support (3.0.0)
+      activesupport (= 3.0.0)
+    activesupport (3.0.0)
     addressable (2.2.6)
     coffee-script (2.2.0)
       coffee-script-source
@@ -16,6 +19,8 @@ GEM
       faraday (~> 0.6.0)
     haml (3.1.2)
     hashie (1.0.0)
+    i18n (0.6.0)
+    json (1.5.3)
     multi_json (1.0.3)
     multi_xml (0.2.2)
     multipart-post (1.1.2)
@@ -39,8 +44,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  active_support
   coffee-script
   haml
+  i18n
+  json
   sass
   sinatra
   therubyracer-heroku
