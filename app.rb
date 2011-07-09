@@ -33,7 +33,6 @@ helpers do
     else
       search = Twitter::Search.new.hashtag(hashtag).no_retweets.since_id(session[:key]).per_page(5).fetch
       session[:key] = search.first.id if search.size > 1
-      search.each {|t| puts t.id}
       search
     end
   end
