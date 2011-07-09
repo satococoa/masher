@@ -21,6 +21,12 @@ $ ->
         tweets = JSON.parse(localStorage[hashtag])
         for i in [0..num]
           tweet = tweets.shift()
+          if localStorage[hashtag+'log']
+            logs = JSON.parse(localStorage[hashtag+'log'])
+          else
+            logs = []
+          logs.push(tweet)
+          localStorage[hashtag+'log'] = JSON.stringify(logs)
           if tweet
             localStorage[hashtag] = JSON.stringify(tweets)
             # console.log "#{tweet.user} : #{tweet.id} : #{tweet.text} : #{tweet.icon}"
@@ -64,6 +70,15 @@ $ ->
     , process_interval
 
     # initialize
+    if localStorage[hashtag+'log']
+      if localStorage[hashtag]
+        tweets = JSON.parse(localStorage[hashtag])
+      else
+        tweets = []
+      logs = JSON.parse(localStorage[hashtag+'log'])
+      for log in logs
+        tweets.push log
+      localStorage[hashtag] = JSON.stringify(tweets)
     process(5)
     fetch()
 
