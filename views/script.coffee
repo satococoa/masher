@@ -27,8 +27,10 @@ $ ->
             set_colors tweet.colors
             set_tweet tweet
             loaded++
-            if loaded >= 4
-              $('body').removeClass('loading')
+            article = $("article:nth-child(#{loaded})")
+            if article.length > 1
+              article.removeClass('loading')
+              
 
     set_colors = (colors) ->
       i = 0
@@ -48,7 +50,9 @@ $ ->
       second.html(first.html())
       first.find('.icon img').attr('src', tweet.icon)
       first.find('h2').text(tweet.user)
-      first.find('.tweet p').text(tweet.text)
+      tagstr = "#"+hashtag
+      re = new RegExp('('+tagstr+')', 'i')
+      first.find('.tweet p').html(tweet.text.replace(re, '<span class="hashtag">$1</span>'))
 
     # timer
     fetcher = setInterval () ->
