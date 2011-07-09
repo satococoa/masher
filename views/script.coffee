@@ -37,7 +37,18 @@ $ ->
         i++
 
     set_tweet = (tweet) ->
-      console.log tweet.id
+      first  = $('article:first')
+      second = $('article:nth-child(2)')
+      third  = $('article:nth-child(3)')
+      forth  = $('article:nth-child(4)')
+      fifth  = $('article:last')
+      fifth.html(forth.html())
+      forth.html(third.html())
+      third.html(second.html())
+      second.html(first.html())
+      first.find('.icon img').attr('src', tweet.icon)
+      first.find('h2').text(tweet.user)
+      first.find('.tweet p').text(tweet.text)
 
     # timer
     fetcher = setInterval () ->
