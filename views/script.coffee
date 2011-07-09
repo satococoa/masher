@@ -19,9 +19,16 @@ $ ->
       if localStorage[hashtag]
         tweets = JSON.parse(localStorage[hashtag])
         tweet = tweets.shift()
-        localStorage[hashtag] = JSON.stringify(tweets)
-        # debug
-        console.log "#{tweet.id} : #{tweet.text}"
+        if tweet
+          localStorage[hashtag] = JSON.stringify(tweets)
+          # console.log "#{tweet.user} : #{tweet.id} : #{tweet.text} : #{tweet.icon}"
+          set_colors tweet.colors
+
+    set_colors = (colors) ->
+      i = 0
+      for color in colors
+        $(".color:nth-child(#{i})").css('background-color', "##{color}")
+        i++
 
     # timer
     fetcher = setInterval () ->
