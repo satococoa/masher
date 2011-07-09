@@ -181,23 +181,6 @@ a:focus {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 body.screen {
 	overflow: hidden;
 }
@@ -209,32 +192,35 @@ body.screen {
 	color: #FFF;
 	clear: both;
 	padding: 0 0 2% 0;
+  font-family: HiraMaruPro-W4,"ヒラギノ丸ゴ Pro W4",'メイリオ',"Lucida Sans Unicode","Lucida Grande",Arial,Helvetica,Verdana,HiraMaruPro-W4,"ヒラギノ角ゴ Pro W3",HiraKakuPro-W3,Osaka,sans-serif;
+  word-break: break-all;
 }
-#header {
-	margin-bottom: 2%;
-	margin-top: 2%;
+#articles article .hashtag {
+	color: #ffc208;
 }
-#header #search .hash_tag {
-	width: 40%;
-	margin-right: 2%;
-}
+
+
 #articles article .name {
 	display: inline;
+	line-height: 1.1;
 }
 #articles article .tweet {
 	display: inline;
 }
-#articles article .tweet p:first-child {
+#articles article .tweet p {
 	display: inline;
+  word-break: break-all;
+	white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 #articles article:first-child {
 	font-size: 540%;
-	line-height: 1;
+	line-height: 1.1;
 	width: 98%;
 	margin-right: auto;
 	margin-left: auto;
-	letter-spacing: -0.1em;
+	margin-top: 2%;
 }
 #articles article.loading:first-child {
 	height:400px;
@@ -252,12 +238,12 @@ body.screen {
 #articles article.loading img,
 #articles article.loading p {
 	display:none !important;
+	line-height: 1.3;
 }
 #articles article:first-child .icon img {
 	height: 180px;
 	width: 180px;
 	border: 8px solid #FFF;
-	margin-top: 8%;
 	display: block;
 }
 #articles article a.icon {
@@ -276,6 +262,8 @@ body.screen {
 	border-top-style: dotted;
 	border-top-color: #FFF;
 	padding: 1%;
+	height: 800px;
+	line-height: 1.3;
 }
 #articles article:nth-child(2) .icon img,
 #articles article:nth-child(3) .icon img,
@@ -294,8 +282,8 @@ body.screen {
 #articles article:nth-child(2) a.icon,
 #articles article:nth-child(3) a.icon,
 #articles article:nth-child(4) a.icon,
-#articles article:nth-child(5) .icon img a.icon {
-	margin-right: 4%;
+#articles article:nth-child(5) a.icon {
+	margin-right: 3%;
 }
 
 
