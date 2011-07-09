@@ -62,3 +62,7 @@ get '/' do
   haml :index
 end
 
+post '/' do
+  redirect "/#{params[:hashtag]}"
+end
+  
