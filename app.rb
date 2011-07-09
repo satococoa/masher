@@ -1,5 +1,24 @@
 # coding: utf-8
 
+class Masher
+  def self.convert_hex(str)
+    an = []
+    str.split(//).each do |s|
+      an << format("%x",s.unpack("U*")[0])
+    end
+    an.join("").scan(/.../)
+  end
+
+  def self.convert_scale(str)
+    no = 0
+    str.split(//).each do |s|
+      s_hex = format("%x",s.unpack("U*")[0]).to_i
+      no += s_hex
+    end
+    no
+  end
+end
+
 configure :development do
   config = YAML::load_file('config.yml')
 end
@@ -15,7 +34,7 @@ helpers do
     Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
   end
   def transform(tweets)
-    tweets.map {|i| {:text => i.text, :color => ['#fff', '#000']} }
+    tweets.map {|i| {:id => i.id, :text => i.text, :colors => Masher::convert_hex(i.text)} }
   end
 end
 
