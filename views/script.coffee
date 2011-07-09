@@ -40,6 +40,7 @@ $ ->
 
     set_colors = (colors) ->
       i = 0
+      $('.color').css('background-color', '#fff')
       for color in colors
         $(".color:nth-child(#{i})").css('background-color', "##{color}")
         i++
