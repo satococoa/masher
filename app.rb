@@ -11,11 +11,11 @@ end
 helpers do
   include Rack::Utils
   alias_method :h, :escape_html
-  def get_tweets(hash)
-    {:test => 'aaa'}
+  def get_tweets(hashtag)
+    Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
   end
   def transform(tweets)
-    {:test2 => 'bbb'}
+    tweets.map {|i| {:text => i.text, :color => ['#fff', '#000']} }
   end
 end
 
@@ -31,9 +31,9 @@ get '/' do
   haml :index
 end
 
-get '/tweets/:hash' do
+get '/tweets/:hashtag' do |hashtag|
   pass if hash.blank?
-  tweets = get_tweets(hash)
+  tweets = get_tweets(hashtag)
   data = transform(tweets)
   data.to_json
 end
