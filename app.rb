@@ -75,6 +75,7 @@ get '/' do
 end
 
 post '/' do
-  redirect "/#{params[:hashtag]}"
+  rm_hash = params[:hashtag].gsub!(/#?/,"")
+  redirect "/#{rm_hash}"
 end
   
