@@ -203,25 +203,16 @@ body.screen {
 }
 
 #articles {
-	padding-top: 3%;
+	padding-top: 1%;
 }
 #articles article {
 	color: #FFF;
 	clear: both;
 	padding: 0 0 2% 0;
 }
-#articles article a.icon {
-	color: #FFF;
-	display: block;
-	float: left;
-	padding-right: 2%;
-}
 #header {
 	margin-bottom: 2%;
 	margin-top: 2%;
-}
-#header #search .hash_tag {
-	width: 40%;
 }
 #header #search .hash_tag {
 	width: 40%;
@@ -239,15 +230,23 @@ body.screen {
 
 #articles article:first-child {
 	font-size: 540%;
-	line-height: 1.3;
+	line-height: 1;
 	width: 98%;
 	margin-right: auto;
 	margin-left: auto;
+	letter-spacing: -0.1em;
 }
 #articles article:first-child .icon img {
 	height: 180px;
 	width: 180px;
 	border: 8px solid #FFF;
+	margin-top: 8%;
+	display: block;
+}
+#articles article a.icon {
+	display: block;
+	float: left;
+	margin-right: 2%;
 }
 #articles article:nth-child(2),
 #articles article:nth-child(3),
@@ -276,6 +275,12 @@ body.screen {
 	border-right: 1px dotted  #FFF;
 }
 
+#articles article:nth-child(2) a.icon,
+#articles article:nth-child(3) a.icon,
+#articles article:nth-child(4) a.icon,
+#articles article:nth-child(5) .icon img a.icon {
+	margin-right: 4%;
+}
 
 
 
@@ -309,4 +314,7 @@ body.screen {
 body.screen #colors .color img {
 	height: 20px;
 	width: 30px;
+}
+#articles article .name {
+	color: #5fe7ff;
 }
