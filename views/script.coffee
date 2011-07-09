@@ -1,26 +1,38 @@
 $ ->
   if $('#screen').length > 0
     hashtag = $('#hashtag').val()
-    interval = 5000
+    fetch_interval   = 30000
+    process_interval = 5000
+
     fetch = () ->
       if hashtag isnt ''
         $.getJSON '/tweets/'+hashtag, (data, status) ->
           if localStorage[hashtag]
             tweets = JSON.parse(localStorage[hashtag])
           else
-            tweets = {}
+            tweets = []
           for d in data
-            tweets[d.id] = d
+            tweets.push d
           localStorage[hashtag] = JSON.stringify(tweets)
 
-    process = (tweet) ->
-      console.log tweet
+    process = () ->
+      if localStorage[hashtag]
+        tweets = JSON.parse(localStorage[hashtag])
+        tweet = tweets.shift()
+        localStorage[hashtag] = JSON.stringify(tweets)
+        # debug
+        console.log "#{tweet.id} : #{tweet.text}"
 
     # timer
     fetcher = setInterval () ->
       fetch()
-    , interval
+    , fetch_interval
 
-    # initial get
+    processer = setInterval () ->
+      process()
+    , process_interval
+
+    # initialize
+    process()
     fetch()
 
