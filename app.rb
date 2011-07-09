@@ -34,7 +34,15 @@ helpers do
     Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
   end
   def transform(tweets)
-    tweets.map {|i| {:id => i.id, :text => i.text, :colors => Masher::convert_hex(i.text)} }
+    tweets.map do |i|
+      {
+        :id => i.id,
+        :user => i.from_user,
+        :icon => i.profile_image_url,
+        :text => i.text,
+        :colors => Masher::convert_hex(i.text)
+      }
+    end
   end
 end
 
@@ -48,7 +56,7 @@ end
 
 get '/:hashtag' do |hashtag|
   pass if hash.blank?
-  haml :screen, :locals => {:hashtag => hashtag}
+  haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
 end
 
 get '/tweets/:hashtag' do |hashtag|
@@ -59,6 +67,10 @@ get '/tweets/:hashtag' do |hashtag|
 end
 
 get '/' do
-  haml :index
+  haml :index, :locals => {:class_name => 'index'}
 end
 
+post '/' do
+  redirect "/#{params[:hashtag]}"
+end
+  
