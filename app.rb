@@ -56,14 +56,14 @@ helpers do
     else
       tweets = search.since_id(since_id).fetch
     end
-    if tweets.size > 1
+    if tweets.size > 0
       REDIS.set "timestamp:#{hashtag}", Time.now.to_i
       REDIS.set "last_id:#{hashtag}", tweets.first.id
       # 最新10件を保持
-      tweets.each do |tweet|
-        REDIS.lpush "tweets:#{hashtag}", tweet.to_json
+      tweets.reverse.each do |tweet|
+        REDIS.rpush "tweets:#{hashtag}", tweet.to_json
       end
-      REDIS.ltrim "tweets:#{hashtag}", 0, 9
+      REDIS.ltrim "tweets:#{hashtag}", -10, -1
     end
   end
   def transform(tweets)
