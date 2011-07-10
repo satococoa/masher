@@ -37,14 +37,12 @@ helpers do
   def get_tweets(hashtag)
     key = hashtag.to_sym
     if session[:key].nil? 
-      search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(5).fetch
-      session[:key] = search.first.id if search.size > 1
-      search        
+      search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(50).fetch
     else
-      search = Twitter::Search.new.hashtag(hashtag).no_retweets.since_id(session[:key]).per_page(5).fetch
-      session[:key] = search.first.id if search.size > 1
-      search
+      search = Twitter::Search.new.hashtag(hashtag).no_retweets.since_id(session[:key]).per_page(50).fetch
     end
+    session[:key] = search.first.id if search.size > 1
+    search
   end
   def transform(tweets)
     tweets.map do |i|
