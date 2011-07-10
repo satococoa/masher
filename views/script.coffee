@@ -4,6 +4,7 @@ $ ->
     hashtag = $('#hashtag').val()
     fetch_interval   = 30000
     process_interval = 5000
+    shown = {}
 
     fetch = () ->
       if hashtag isnt ''
@@ -13,7 +14,9 @@ $ ->
           else
             tweets = []
           for d in data
-            tweets.push d
+            if not shown[d.id]
+              tweets.push d
+              shown[d.id] = 1
           sessionStorage[hashtag] = JSON.stringify(tweets)
 
     process = (num) ->
@@ -39,7 +42,7 @@ $ ->
         i++
 
     set_tweet = (tweet) ->
-      console.log tweet.timestamp+' : '+tweet.user+' : '+tweet.text
+      # console.log tweet.timestamp+' : '+tweet.user+' : '+tweet.text
       first  = $('article:first')
       second = $('article:nth-child(2)')
       third  = $('article:nth-child(3)')
@@ -67,4 +70,3 @@ $ ->
     # initialize
     sessionStorage.clear()
     fetch()
-

@@ -40,9 +40,13 @@ helpers do
       get_tweets_from_api(hashtag)
     end
     tweets = REDIS.lrange("tweets:#{hashtag}", 0, 9)
+    if tweets.nil?
+      return []
+    end
     tweets = tweets.map {|tweet| Hashie::Mash.new(JSON.parse(tweet)) }
-    session[hashtag] = tweets.last.id.to_s
-    tweets.delete_if {|tweet| tweet.id <= session[hashtag].to_i }
+    tweets = tweets.delete_if {|tweet| tweet.id <= session[hashtag].to_i }
+    session[hashtag] = tweets.last.id.to_s if tweets.length > 0
+    tweets
   end
   def get_tweets_from_api(hashtag)
     search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(10)
@@ -69,7 +73,8 @@ helpers do
         :user => i.from_user,
         :icon => i.profile_image_url,
         :text => i.text,
-        :colors => Masher::convert_hex(i.text)
+        :colors => Masher::convert_hex(i.text),
+        :timestamp => i.created_at
       }
     end
   end
@@ -83,19 +88,6 @@ get '/script.js' do
   coffee :script
 end
 
-get '/:hashtag' do |hashtag|
-  pass if hash.blank?
-  session.clear
-  haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
-end
-
-get '/tweets/:hashtag' do |hashtag|
-  pass if hash.blank?
-  tweets = get_tweets(hashtag)
-  data = transform(tweets)
-  data.to_json
-end
-
 get '/' do
   haml :index, :locals => {:class_name => 'index'}
 end
@@ -105,3 +97,14 @@ post '/' do
   redirect "/#{rm_hash}"
 end
   
+get '/:hashtag' do |hashtag|
+  session.clear
+  haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
+end
+
+get '/tweets/:hashtag' do |hashtag|
+  tweets = get_tweets(hashtag)
+  data = transform(tweets)
+  data.to_json
+end
+
