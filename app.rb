@@ -35,14 +35,32 @@ helpers do
   include Rack::Utils
   alias_method :h, :escape_html
   def get_tweets(hashtag)
-    key = hashtag.to_sym
-    if session[:key].nil? 
-      search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(50).fetch
-    else
-      search = Twitter::Search.new.hashtag(hashtag).no_retweets.since_id(session[:key]).per_page(50).fetch
+    got_timestamp = REDIS.get("timestamp:#{hashtag}")
+    if got_timestamp.to_i + 30 < Time.now.to_i
+      get_tweets_from_api(hashtag)
     end
-    session[:key] = search.first.id if search.size > 1
-    search
+    tweets = REDIS.lrange("tweets:#{hashtag}", 0, 9)
+    tweets = tweets.map {|tweet| Hashie::Mash.new(JSON.parse(tweet)) }
+    session[hashtag] = tweets.last.id.to_s
+    tweets.delete_if {|tweet| tweet.id <= session[hashtag].to_i }
+  end
+  def get_tweets_from_api(hashtag)
+    search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(10)
+    since_id = REDIS.get("last_id:#{hashtag}")
+    if since_id.nil? 
+      tweets = search.fetch
+    else
+      tweets = search.since_id(since_id).fetch
+    end
+    if tweets.size > 1
+      REDIS.set "timestamp:#{hashtag}", Time.now.to_i
+      REDIS.set "last_id:#{hashtag}", tweets.first.id
+      # 最新10件を保持
+      tweets.each do |tweet|
+        REDIS.lpush "tweets:#{hashtag}", tweet.to_json
+      end
+      REDIS.ltrim "tweets:#{hashtag}", 0, 9
+    end
   end
   def transform(tweets)
     tweets.map do |i|
@@ -67,6 +85,7 @@ end
 
 get '/:hashtag' do |hashtag|
   pass if hash.blank?
+  session.clear
   haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
 end
 

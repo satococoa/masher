@@ -8,6 +8,7 @@ gem 'i18n'
 gem 'active_support', :require => 'active_support/all'
 gem 'json'
 gem 'redis'
+gem 'hashie'
 
 group :production do
   gem 'therubyracer-heroku'

@@ -8,21 +8,21 @@ $ ->
     fetch = () ->
       if hashtag isnt ''
         $.getJSON '/tweets/'+hashtag, (data, status) ->
-          if localStorage[hashtag]
-            tweets = JSON.parse(localStorage[hashtag])
+          if sessionStorage[hashtag]
+            tweets = JSON.parse(sessionStorage[hashtag])
           else
             tweets = []
           for d in data
             tweets.push d
-          localStorage[hashtag] = JSON.stringify(tweets)
+          sessionStorage[hashtag] = JSON.stringify(tweets)
 
     process = (num) ->
-      if localStorage[hashtag]
-        tweets = JSON.parse(localStorage[hashtag])
-        for i in [0..num]
+      if sessionStorage[hashtag]
+        tweets = JSON.parse(sessionStorage[hashtag])
+        for i in [0...num]
           tweet = tweets.shift()
           if tweet
-            localStorage[hashtag] = JSON.stringify(tweets)
+            sessionStorage[hashtag] = JSON.stringify(tweets)
             set_colors tweet.colors
             set_tweet tweet
             loaded++
@@ -39,6 +39,7 @@ $ ->
         i++
 
     set_tweet = (tweet) ->
+      console.log tweet.timestamp+' : '+tweet.user+' : '+tweet.text
       first  = $('article:first')
       second = $('article:nth-child(2)')
       third  = $('article:nth-child(3)')
@@ -64,6 +65,6 @@ $ ->
     , process_interval
 
     # initialize
-    process(5)
+    sessionStorage.clear()
     fetch()
 

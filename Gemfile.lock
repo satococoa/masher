@@ -48,6 +48,7 @@ DEPENDENCIES
   active_support
   coffee-script
   haml
+  hashie
   i18n
   json
   redis
