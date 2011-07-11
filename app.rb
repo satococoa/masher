@@ -36,12 +36,15 @@ helpers do
   alias_method :h, :escape_html
   ## REDISからツイートを取得するメソッド
   def get_tweets(hashtag)
-    # REDISのタイムスタンプが 現在より30秒以上たってたらAPIからツイートを取得
+    # 最後にそのハッシュタグのツイートを取得したのが30秒以上前だった場合、
+    # 新しくツイートを取得してREDISに保存
     got_timestamp = REDIS.get("timestamp:#{hashtag}")
     if got_timestamp.to_i + 30 < Time.now.to_i
       get_tweets_from_api(hashtag)
     end
     # REDISのインデックス0から9を取得
+    # 最新10件分が古い発言を先頭の要素として取得される
+    # [発言1, 発言2, 発言3, ..., 発言10]
     tweets = REDIS.lrange("tweets:#{hashtag}", 0, 9)
     if tweets.nil?
       return []
@@ -51,11 +54,13 @@ helpers do
     session[hashtag] = tweets.last.id.to_s if tweets.length > 0
     tweets
   end
-  ## Twitter APIからツイートを取得、REDISにストアするするメソッド
+  ## Twitter APIからツイートを取得、REDISにストアするメソッド
   def get_tweets_from_api(hashtag)
     # ハッシュタグ検索、RT除外して10件取得
     search = Twitter::Search.new.hashtag(hashtag).no_retweets.per_page(10)
-    # REDISに since_idがなければ10件すべて取得、あればsince_id以降から取得
+    # ハッシュタグで検索された結果がREDISに保存されている場合、
+    # 最新のツイートのIDがlast_idとしてREDISに保存されている
+    # last_idがなければ最新10件をすべて取得、あればlast_id以降から取得（10件未満のこともあり）
     since_id = REDIS.get("last_id:#{hashtag}")
     if since_id.nil?
       tweets = search.fetch
@@ -67,11 +72,17 @@ helpers do
       REDIS.set "timestamp:#{hashtag}", Time.now.to_i
       REDIS.set "last_id:#{hashtag}", tweets.first.id
       # 最新10件を保持
+      # APIから取得されたツイートは新しいものから順に最大10件
+      # [発言10, 発言9, 発言8, ..., 発言1]
       tweets.reverse.each do |tweet|
-        # ツイートの配列を反転させて新しいツイートから REDISの末尾にjsonで追加
+        # ツイートの配列を反転させて古いツイートから順にREDISの末尾にjsonで追加
+        # [発言1, 発言2, 発言3, ..., 発言10]
+        # 元々発言(発言-2から発言0)がREDISに保存されていた場合は以下のようになる
+        # [発言-2, 発言-1, 発言0, 発言1, 発言2, ..., 発言10]
         REDIS.rpush "tweets:#{hashtag}", tweet.to_json
       end
-      # インデックス-10 から-1以外を削除　（11番目に新しいツイート以降は削除）
+      # 右から数えて10件のみを残す
+      # 最新10件が古いツイートを先頭として保存されている
       REDIS.ltrim "tweets:#{hashtag}", -10, -1
     end
   end
