@@ -17,6 +17,15 @@ class Masher
     end
     no
   end
+
+  def self.important(tweet)
+    case tweet.text
+    when /寒/, /暑/
+      true
+    else
+      false
+    end
+  end
 end
 
 enable :sessions
@@ -94,6 +103,7 @@ helpers do
         :icon => i.profile_image_url,
         :text => i.text,
         :colors => Masher::convert_hex(i.text),
+        :important => Masher::important(i),
         :timestamp => i.created_at
       }
     end

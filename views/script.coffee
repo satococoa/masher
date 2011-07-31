@@ -41,6 +41,10 @@ $ ->
         $(".color:nth-child(#{i})").css('background-color', "##{color}")
         i++
 
+    copy_content = (from, to) ->
+      to.html(from.html())
+      to.css('background-color', from.css('background-color'))
+
     set_tweet = (tweet) ->
       # console.log tweet.timestamp+' : '+tweet.user+' : '+tweet.text
       first  = $('article:first')
@@ -48,15 +52,20 @@ $ ->
       third  = $('article:nth-child(3)')
       forth  = $('article:nth-child(4)')
       fifth  = $('article:last')
-      fifth.html(forth.html())
-      forth.html(third.html())
-      third.html(second.html())
-      second.html(first.html())
+      copy_content(forth, fifth)
+      copy_content(third, forth)
+      copy_content(second, third)
+      copy_content(first, second)
+
       first.find('.icon img').attr('src', tweet.icon)
       first.find('h2').text(tweet.user)
       tagstr = "#"+hashtag
       re = new RegExp('('+tagstr+')', 'i')
       first.find('.tweet p').html(tweet.text.replace(re, '<span class="hashtag">$1</span>'))
+      if tweet.important
+        first.css('background-color', '#663333');
+      else
+        first.css('background-color', '#000000');
 
     # timer
     fetcher = setInterval () ->
