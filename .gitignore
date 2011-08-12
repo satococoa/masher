@@ -2,3 +2,5 @@ config.yml*
 .sass-cache
 tmp
 .DS_Store
+bundle
+.bundle
