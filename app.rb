@@ -18,16 +18,17 @@ class Masher
     no
   end
 
-  def self.important(tweet)
-    case tweet.text
-    when /寒/, /暑/
-      true
-    else
-      false
-    end
-  end
+  # def self.important(tweet)
+  #   case tweet.text
+  #   when /寒/, /暑/
+  #     true
+  #   else
+  #     false
+  #   end
+  # end
   
   def self.include_important(tweet,key)
+    return false if key.nil?
     a = []
     key.split(',').each do |ke|
       ke.strip!
@@ -118,7 +119,7 @@ helpers do
         :text => i.text,
         :colors => Masher::convert_hex(i.text),
         # :important => Masher::important(i),
-        :important => Masher::include_important?(i, keywords),
+        :important => Masher::include_important(i, keywords),
         :timestamp => i.created_at
       }
     end
@@ -142,18 +143,15 @@ post '/' do
   redirect "/#{rm_hash}"
 end
 
-post '/keywords' do
-  @keywords = params[:keyword]
-end
-  
 get '/:hashtag' do |hashtag|
   session.clear
   haml :screen, :locals => {:class_name => 'screen', :hashtag => hashtag}
 end
 
 get '/tweets/:hashtag' do |hashtag|
+  keywords = params[:keyword]# ?
   tweets = get_tweets(hashtag)
-  data = transform(tweets, @keywords )
+  data = transform(tweets, keywords)# ?
   data.to_json
 end
 
