@@ -10,5 +10,5 @@ $(document).ready(function () {
   });
   init();
 });
-var storekey = localStorage["keyword"].split(",");
+var storekey = localStorage["keyword"];
 console.log(storekey);
