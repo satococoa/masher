@@ -26,6 +26,20 @@ class Masher
       false
     end
   end
+  
+  def self.include_important(tweet,key)
+    a = []
+    key.split(',').each do |ke|
+      ke.strip!
+      case tweet.text
+      when /#{ke}/
+        a << true
+      else
+        a << false
+      end
+    end
+    a.include?(true)
+  end
 end
 
 enable :sessions
@@ -95,7 +109,7 @@ helpers do
       REDIS.ltrim "tweets:#{hashtag}", -10, -1
     end
   end
-  def transform(tweets)
+  def transform(tweets, keywords)
     tweets.map do |i|
       {
         :id => i.id,
@@ -103,7 +117,8 @@ helpers do
         :icon => i.profile_image_url,
         :text => i.text,
         :colors => Masher::convert_hex(i.text),
-        :important => Masher::important(i),
+        # :important => Masher::important(i),
+        :important => Masher::include_important?(i, keywords),
         :timestamp => i.created_at
       }
     end
@@ -126,6 +141,10 @@ post '/' do
   rm_hash = params[:hashtag].gsub!(/#?/,"")
   redirect "/#{rm_hash}"
 end
+
+post '/keywords' do
+  @keywords = params[:keyword]
+end
   
 get '/:hashtag' do |hashtag|
   session.clear
@@ -134,7 +153,7 @@ end
 
 get '/tweets/:hashtag' do |hashtag|
   tweets = get_tweets(hashtag)
-  data = transform(tweets)
+  data = transform(tweets, @keywords )
   data.to_json
 end
 

@@ -62,7 +62,7 @@ $ ->
       tagstr = "#"+hashtag
       re = new RegExp('('+tagstr+')', 'i')
       first.find('.tweet p').html(tweet.text.replace(re, '<span class="hashtag">$1</span>'))
-      if tweet.important
+      if tweet.include_important
         first.css('background-color', '#663333');
       else
         first.css('background-color', '#000000');
