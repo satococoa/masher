@@ -33,7 +33,7 @@ class Masher
     key.split(',').each do |ke|
       ke.strip!
       case tweet.text
-      when /#{ke}/
+      when /#{ke}/i
         a << true
       else
         a << false
